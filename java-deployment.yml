@@ -20,6 +20,14 @@ spec:
         imagePullPolicy: Never
         ports:
           - containerPort: 8080
+        env:
+          - name: db_root_password
+            valueFrom:
+              secretKeyRef:
+                name: sql-secrets
+                key: db_root_password
+          - name: db_name
+            value: postgres
 
 ---
 apiVersion: v1

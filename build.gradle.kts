@@ -15,6 +15,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.2")
+    implementation("org.postgresql:postgresql:42.6.0")
 }
 
 tasks.test {
