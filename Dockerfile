@@ -5,4 +5,5 @@ WORKDIR /app
 
 COPY ./build/install/java-docker .
 
+EXPOSE 5000
 CMD ["./bin/java-docker"]
