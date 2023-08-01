@@ -35,6 +35,13 @@ public class HelloController
         return "login";
     }
 
+    @GetMapping("/home")
+    public String home()
+    {
+        System.out.println("HelloController#home");
+        return "home";
+    }
+
     @PostMapping("/perform_login")
     public String doLogin(@RequestParam String username, @RequestParam String password)
     {

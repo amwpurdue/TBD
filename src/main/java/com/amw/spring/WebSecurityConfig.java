@@ -30,17 +30,14 @@ public class WebSecurityConfig
     {
         try
         {
-            return http.authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/login").permitAll()
-                            .requestMatchers("/**").hasRole("USER")
-//                            .requestMatchers("/**").permitAll()
+            return http
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/index").permitAll()
+                            .requestMatchers("/home/**").hasRole("USER")
+                            .anyRequest().permitAll()
                     )
-//                    .formLogin(form -> form.loginPage("/login")
-//                            .loginProcessingUrl("/perform_login")
-//                            .defaultSuccessUrl("/homepage.html", true)
-//                            .failureUrl("/login.html?error=true")
-//                            .failureHandler(this::authenticationFailureHandler))
-                    .formLogin(withDefaults())
+                    .formLogin(form -> form.loginPage("/login")
+                    .permitAll())
                     .build();
         }
         catch (Exception e)
@@ -48,13 +45,6 @@ public class WebSecurityConfig
             throw new RuntimeException(e);
         }
         // ...
-    }
-
-    private void authenticationFailureHandler(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e)
-    {
-
-        System.out.println("******** authenticationFailureHandler ********");
-        e.printStackTrace();
     }
 
     @Bean
@@ -67,7 +57,6 @@ public class WebSecurityConfig
         dataSource.setUrl(dbInfo.url());
         dataSource.setUsername(dbInfo.user());
         dataSource.setPassword(dbInfo.password());
-
 
         return dataSource;
     }
