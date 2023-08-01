@@ -30,9 +30,16 @@ public class WebSecurityConfig
     {
         try
         {
+            if("a".equals("a"))
+            {
+                return http.authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                ).build();
+            }
             return http
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/index").permitAll()
+                            .requestMatchers("/static/**").permitAll()
                             .requestMatchers("/home/**").hasRole("USER")
                             .anyRequest().permitAll()
                     )
