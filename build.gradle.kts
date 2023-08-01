@@ -15,7 +15,14 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.2")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.1.2")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.1.2")
+    implementation("org.springframework:spring-jdbc:6.0.11")
     implementation("org.postgresql:postgresql:42.6.0")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 }
 
 tasks.test {

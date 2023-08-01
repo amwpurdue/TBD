@@ -1,18 +1,40 @@
-package com.amw.db;
+package com.amw.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.stereotype.Service;
+
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.Optional;
+import java.util.*;
 
+@Service
 public class DBConnection
 {
     private final Connection _connection;
 
-    public DBConnection(Connection connection)
+    @Autowired
+    public DBConnection(DataSource dataSource)
     {
-        _connection = connection;
+        try
+        {
+            _connection = dataSource.getConnection();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static DBConnection create()
+    public static DBInfo getDBInfo()
     {
         final Optional<String> pwOptional = Optional.ofNullable(System.getenv("db_root_password"));
         final Optional<String> hostOptional = Optional.ofNullable(System.getenv("MY_RELEASE_SQL_POSTGRESQL_SERVICE_HOST"));
@@ -22,27 +44,18 @@ public class DBConnection
         {
             return null;
         }
-        try
-        {
-            final StringBuilder urlBuilder = new StringBuilder()
-                    .append("jdbc:postgresql://")
-                    .append(hostOptional.get())
-                    .append(":")
-                    .append(portOptional.get())
-                    .append("/")
-                    .append(dbNameOptional.get());
-            final Connection connection = DriverManager.getConnection(
-                    urlBuilder.toString(),
-                    "postgres",
-                    pwOptional.get());
-            return new DBConnection(connection);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
 
-        return null;
+        final String urlBuilder = "jdbc:postgresql://" +
+                hostOptional.get() +
+                ":" +
+                portOptional.get() +
+                "/" +
+                dbNameOptional.get();
+        return new DBInfo(
+                urlBuilder,
+                "postgres",
+                pwOptional.get()
+        );
     }
 
 
@@ -69,5 +82,9 @@ public class DBConnection
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    public record DBInfo(String url, String user, String password)
+    {
     }
 }
